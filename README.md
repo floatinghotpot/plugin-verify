@@ -13,12 +13,12 @@ Now install the verify tool and use it to verify a cordova plugin:
 ```bash
 npm install plugin-verify -g
 
-plugin-verify <plugin id or local path>
+plugin-verify <plugin_id_or_path> [ios | android | ...]
 ```
 
 Example:
 ```bash
-plugin-verify cordova-plugin-admobpro
+plugin-verify cordova-plugin-admobpro ios
 ```
 
 # How It Works #
@@ -27,18 +27,18 @@ Here are the steps that the tool actualy runs:
 
 ```bash
     # create a demo project
-    cordova create ./tmp com.rjfun.test1 Test1
+    cordova create ./tmp com.rjfun.demo Demo
     cd ./tmp
 
     # now add the plugin, cordova CLI will handle dependency automatically
-    cordova plugin add <plugin_id>
+    cordova plugin add <plugin_id_or_path>
 
     cordova platform add android
     cordova platform add ios
 
     # now remove the default www content, copy the demo html file to www
     rm -r www/*;
-    cp plugins/cordova-plugin-admobpro/test/* www/;
+    cp plugins/<plugin_id>/test/* www/;
 
     # now build and run the demo in your device or emulator
     cordova emulate ios;
