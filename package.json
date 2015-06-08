@@ -1,6 +1,6 @@
 {
   "name": "plugin-verify",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Verify a Cordova plugin quickly with its sample index.html",
   "main": "index.js",
   "scripts": {},

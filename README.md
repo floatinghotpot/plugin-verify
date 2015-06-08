@@ -18,10 +18,16 @@ plugin-verify <plugin_id_or_path> [ios | android | ...]
 
 Example:
 ```bash
+
 plugin-verify cordova-plugin-admobpro ios
+
+plugin-verify nl.x-services.plugins.actionsheet android
+
 ```
 
 # How It Works #
+
+It creates a demo cordova project and copy the files under demo/ or test/ for testing purpose.
 
 Here are the steps that the tool actualy runs:
 
@@ -38,7 +44,7 @@ Here are the steps that the tool actualy runs:
 
     # now remove the default www content, copy the demo html file to www
     rm -r www/*;
-    cp plugins/<plugin_id>/test/* www/;
+    cp -r plugins/<plugin_id>/test/* www/;
 
     # now build and run the demo in your device or emulator
     cordova emulate ios;

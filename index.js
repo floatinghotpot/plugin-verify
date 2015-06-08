@@ -50,8 +50,16 @@ var verify_cli = {
             exec('cordova platform add ' + platform);
         }
 
-        rm('-r', 'www/*');
-        cp('-r', 'plugins/' + plugin_id + '/test/*', 'www/');
+        var demo_dir = '';
+        if( test('-f', 'plugins/' + plugin_id + '/demo/index.html') ) {
+            rm('-r', 'www/*');
+            cp('-r', 'plugins/' + plugin_id + '/demo/*', 'www/');
+        } else if( test('-d', 'plugins/' + plugin_id + '/test/index.html') ) {
+            rm('-r', 'www/*');
+            cp('-r', 'plugins/' + plugin_id + '/test/*', 'www/');
+        } else {
+            // no demo found
+        }
 
         if(typeof platform === 'undefined') {
             exec('cordova emulate ios');
