@@ -10,6 +10,9 @@ var fs = require('fs'),
 require('shelljs/global');
 
 var verify_cli = {
+    force_landscape: false,
+    force_portrait: false,
+
     verify: function( id_or_path, platform ) {
         var plugin_id = id_or_path;
         var localpath = path.resolve( id_or_path );
@@ -20,6 +23,19 @@ var verify_cli = {
         exec('cordova create ' + tmp_path + ' com.rjfun.demo Demo');
         cd( tmp_path );
         
+        if(this.force_landscape) {
+            var config_xml = './config.xml';
+            var config_content = fs.readFileSync( './config.xml', 'utf8' )
+                .replace('</widget>', '<preference name="Orientation" value="landscape" />\n</widget>');
+            fs.writeFileSync( config_xml, config_content, "utf8" );
+        }
+
+        if(this.force_portrait) {
+            var config_xml = './config.xml';
+            var config_content = fs.readFileSync( './config.xml', 'utf8' )
+                .replace('</widget>', '<preference name="Orientation" value="portrait" />\n</widget>');
+            fs.writeFileSync( config_xml, config_content, "utf8" );
+        }
         
         var plugin_xml = localpath + '/plugin.xml';
         if(test('-d', localpath) && test('-f', plugin_xml) ) {
@@ -54,7 +70,7 @@ var verify_cli = {
         if( test('-f', 'plugins/' + plugin_id + '/demo/index.html') ) {
             rm('-r', 'www/*');
             cp('-r', 'plugins/' + plugin_id + '/demo/*', 'www/');
-        } else if( test('-d', 'plugins/' + plugin_id + '/test/index.html') ) {
+        } else if( test('-f', 'plugins/' + plugin_id + '/test/index.html') ) {
             rm('-r', 'www/*');
             cp('-r', 'plugins/' + plugin_id + '/test/*', 'www/');
         } else {
@@ -67,19 +83,23 @@ var verify_cli = {
         } else {
             exec('cordova emulate ' + platform);
         }
-        
+
         cd('..');
     },
+
     main: function( argv ) {
         var cli = argv[1];
         var args = minimist( argv.slice(2) );
         
+        this.force_landscape = (typeof args.landscape !== 'undefined');
+        this.force_portrait = (typeof args.portrait !== 'undefined');
+
         if(args._.length > 0) {
             this.verify( args._[0], args._[1] );
             
         } else {
             echo('Arguments missing. \n' + 
-                 'Syntax: plugin-verify <plugin> [ios | android | ...]\n' + 
+                 'Syntax: plugin-verify <plugin> [ios | android | ...] [--landscape]\n' + 
                  'Example: plugin-verify cordova-plugin-admobpro ios\n');
         }
     }
