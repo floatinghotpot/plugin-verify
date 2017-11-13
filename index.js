@@ -12,6 +12,7 @@ require('shelljs/global');
 var verify_cli = {
     force_landscape: false,
     force_portrait: false,
+    run_device: false,
 
     verify: function( id_or_path, platform ) {
         var plugin_id = id_or_path;
@@ -60,10 +61,10 @@ var verify_cli = {
         }
 
         if(typeof platform === 'undefined') {
-            exec('cordova platform add ios');
-            exec('cordova platform add android');
+            exec('cordova platform add ios@latest');
+            exec('cordova platform add android@latest');
         } else {
-            exec('cordova platform add ' + platform);
+            exec('cordova platform add ' + platform + '@latest');
         }
 
         var demo_dir = '';
@@ -77,11 +78,12 @@ var verify_cli = {
             // no demo found
         }
 
+        var run = this.run_device ? 'run' : 'emulate';
         if(typeof platform === 'undefined') {
-            exec('cordova emulate ios');
-            exec('cordova emulate android');
+            exec('cordova ' + run + ' ios');
+            exec('cordova ' + run + ' android');
         } else {
-            exec('cordova emulate ' + platform);
+            exec('cordova ' + run + ' ' + platform);
         }
 
         cd('..');
@@ -93,13 +95,14 @@ var verify_cli = {
         
         this.force_landscape = (typeof args.landscape !== 'undefined');
         this.force_portrait = (typeof args.portrait !== 'undefined');
+        this.run_device = (typeof args.device !== 'undefined');
 
         if(args._.length > 0) {
             this.verify( args._[0], args._[1] );
             
         } else {
             echo('Arguments missing. \n' + 
-                 'Syntax: plugin-verify <plugin> [ios | android | ...] [--landscape]\n' + 
+                 'Syntax: plugin-verify <plugin> [ios | android | ...] [--landscape] [--portrait] [--device]\n' +
                  'Example: plugin-verify cordova-plugin-admobpro ios\n');
         }
     }
